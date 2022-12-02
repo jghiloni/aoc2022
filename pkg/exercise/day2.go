@@ -1,14 +1,17 @@
-package day2
+package exercise
 
 import (
 	"fmt"
+	"io"
 	"log"
-	"os"
 
-	"github.com/jghiloni/aoc2022/utils"
+	"github.com/jghiloni/aoc2022/pkg/utils"
 )
 
+type day2 struct{}
+
 type play int
+type result byte
 
 const (
 	rock play = iota + 1
@@ -16,13 +19,15 @@ const (
 	scissors
 )
 
-type result byte
-
 const (
 	lose result = 'X'
 	draw result = 'Y'
 	win  result = 'Z'
 )
+
+func init() {
+	Register("day2", day2{})
+}
 
 func (r result) String() string {
 	switch r {
@@ -97,8 +102,8 @@ func letterToPlay(letter byte) play {
 	return -1
 }
 
-func runPlay(them, us play) int {
-	log.Printf("Play: Them (%s) vs Us (%s)", them, us)
+func runPlay(logger *log.Logger, them, us play) int {
+	logger.Printf("Play: Them (%s) vs Us (%s)", them, us)
 	return int(us) + us.CompareTo(them)
 }
 
@@ -133,13 +138,9 @@ func satisfyStrategy(theirPlay play, strategy result) play {
 	}
 }
 
-func Part1() (string, error) {
-	file, err := os.Open("day2/input.txt")
-	if err != nil {
-		return "", err
-	}
-
-	lines, err := utils.ReaderToLines(file)
+func (d day2) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+	logger := log.New(stderr, log.Default().Prefix(), log.Default().Flags())
+	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return "", err
 	}
@@ -154,19 +155,16 @@ func Part1() (string, error) {
 		bytes := []byte(line)
 		them, us = letterToPlay(bytes[0]), letterToPlay(bytes[2])
 
-		totalScore += runPlay(them, us)
+		totalScore += runPlay(logger, them, us)
 	}
 
-	return fmt.Sprintf("%d", totalScore), nil
+	return totalScore, nil
 }
 
-func Part2() (string, error) {
-	file, err := os.Open("day2/input.txt")
-	if err != nil {
-		return "", err
-	}
+func (d day2) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+	logger := log.New(stderr, log.Default().Prefix(), log.Default().Flags())
 
-	lines, err := utils.ReaderToLines(file)
+	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return "", err
 	}
@@ -183,10 +181,9 @@ func Part2() (string, error) {
 		strategy := result(bytes[2])
 		us = satisfyStrategy(them, strategy)
 
-		log.Printf("their play: %s, our strategy: %s, our play: %s", them, strategy, us)
-
-		totalScore += runPlay(them, us)
+		logger.Printf("their play: %s, our strategy: %s, our play: %s", them, strategy, us)
+		totalScore += runPlay(logger, them, us)
 	}
 
-	return fmt.Sprintf("%d", totalScore), nil
+	return totalScore, nil
 }
