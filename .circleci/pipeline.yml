@@ -11,8 +11,86 @@ parameters:
 
 jobs:
   build-cli:
+    docker:
+      - image: cimg/go:1.19
+    steps:
+      - when:
+          condition: <<pipeline.parameters.build-all>>
+          steps:
+            - checkout
+            - run:
+                name: Build aocctl CLI
+                command: |
+                  go build -o /tmp/aocctl -trimpath -ldflags "-X 'github.com/jghiloni/aoc2022/pkg/version.Version=${CIRCLE_SHA1:0:7}'" ./cmd/aocctl
+                  test "$(/tmp/aocctl --version)" = "${CIRCLE_SHA1:0:7}"
+      - unless:
+          condition: <<pipeline.parameters.build-all>>
+          steps:
+            - run: "echo 'build-all was not set, do nothing'"
+  build-docs:
+    docker:
+      - image: cimg/go:1.19
+    steps:
+      - when:
+          condition:
+            or: [<<pipeline.parameters.build-all>>, <<pipeline.parameters.build-docs>>]
+          steps:
+            - checkout
+            - run:
+                name: Copy assets
+                command: |
+                  mkdir -p /tmp/assets
+                  cp -Rvf ./assets/ /tmp/assets/
+            - run:
+                name: Build aoc.wasm
+                command: |
+                  GOOS=js GOARCH=wasm go build -o /tmp/assets/js/aoc.wasm -trimpath -ldflags "-X 'github.com/jghiloni/aoc2022/pkg/version.Version=${CIRCLE_SHA1:0:7}'" ./cmd/wasm
+            - persist_to_workspace:
+                root: /tmp/assets
+      - unless:
+          condition:
+            or: [<<pipeline.parameters.build-all>>, <<pipeline.parameters.build-docs>>]
+          steps:
+            - run: "echo 'neither build-all nor build-docs was set, do nothing'"
+  publish-docs:
+    docker:
+      - image: cimg/go:1.19
+    steps:
+      - when:
+          condition:
+            or: [<<pipeline.parameters.build-all>>, <<pipeline.parameters.build-docs>>]
+          steps:
+            - run:
+                name: Check out GH pages branch
+                command: |
+                  git clone -b gh-pages ${CIRCLE_REPOSITORY_URL}
+            - attach_workspace:
+                at: /tmp/assets
+            - run:
+                name: Copy assets
+                command: |
+                  cp -Rvf /tmp/assets/* .
+            - run:
+                name: Publish changes
+                command: |
+                  git config user.name 'CircleCI'
+                  git config user.email 'circleci@noreply.com'
+                  git add -A
+                  git commit -m "Publish new version of documentation"
+                  git push origin gh-pages
+      - unless:
+          condition:
+            or: [<<pipeline.parameters.build-all>>, <<pipeline.parameters.build-docs>>]
+          steps:
+            - run: "echo 'neither build-all nor build-docs was set, do nothing'"
 
-    when:
-      condition:
-        equal: [true, <<pipeline.parameters.build-all>>]
-  
+workflows:
+  build:
+    jobs:
+      - build-docs
+      - build-cli:
+          requires:
+            - build-docs
+      - publish-docs:
+          requires:
+            - build-docs
