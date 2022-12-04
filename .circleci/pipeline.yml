@@ -48,6 +48,7 @@ jobs:
                   GOOS=js GOARCH=wasm go build -o /tmp/assets/js/aoc.wasm -trimpath -ldflags "-X 'github.com/jghiloni/aoc2022/pkg/version.Version=${CIRCLE_SHA1:0:7}'" ./cmd/wasm
             - persist_to_workspace:
                 root: /tmp/assets
+                path: .
       - unless:
           condition:
             or: [<<pipeline.parameters.build-all>>, <<pipeline.parameters.build-docs>>]
