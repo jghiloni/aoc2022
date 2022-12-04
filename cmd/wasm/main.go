@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 	"syscall/js"
 
@@ -87,5 +88,7 @@ func main() {
 	js.Global().Set("runExercise", runExercise())
 
 	// this waits till the browser unloads the program
-	select {}
+	<-make(chan bool)
+
+	log.Println("Exiting")
 }

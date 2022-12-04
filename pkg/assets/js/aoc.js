@@ -1,3 +1,6 @@
+const go = new Go();
+let wasm;
+
 const setPage = () => {
   const select = document.getElementById("exercise");
   const runBtn = document.getElementById("run-exercise");
@@ -32,6 +35,8 @@ const doRun = () => {
 
   answerBox.value = result.answer.toString();
   shell.innerHTML += "<br/>$ ";
+
+  // go.run(wasm);
 }
 
 if (!WebAssembly.instantiateStreaming) {
@@ -42,8 +47,8 @@ if (!WebAssembly.instantiateStreaming) {
   };
 }
 
-const go = new Go();
 WebAssembly.instantiateStreaming(fetch("js/aoc.wasm"), go.importObject).then(result => {
-  go.run(result.instance);
+  wasm = result.instance;
+  go.run(wasm);
   setPage();
 });
