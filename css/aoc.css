@@ -51,6 +51,7 @@ main {
   text-align: left;
   padding: 8px;
   margin: 8px;
+  overflow: auto;
 }
 
 #console::before {
