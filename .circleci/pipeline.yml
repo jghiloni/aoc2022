@@ -1,0 +1,18 @@
+version: 2.1
+
+parameters:
+  build-all:
+    type: boolean
+    description: If true, build all assets, including docs
+    default: false
+  build-docs:
+    type: boolean
+    description: If true, build the WASM file, and publish to github pages
+
+jobs:
+  build-cli:
+
+    when:
+      condition:
+        equal: [true, <<pipeline.parameters.build-all>>]
+  

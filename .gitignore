@@ -1,1 +1,3 @@
 .envrc
+.vscode
+pkg/assets/**/*.wasm

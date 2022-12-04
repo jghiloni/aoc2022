@@ -17,6 +17,7 @@ func init() {
 }
 
 func (d day1) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+	log.SetOutput(stdout)
 	calorieCounts, err := getCalorieCounts(stdin)
 	if err != nil {
 		return "", err
@@ -32,7 +33,7 @@ func (d day1) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 		}
 	}
 
-	log.Printf("Elf %d has %d calories in their bag!", richestElf, maxCalCount)
+	log.Printf("Elf %d has \x1b[1;92m%d\x1b[m calories in their bag!", richestElf, maxCalCount)
 	return maxCalCount, nil
 }
 func (d day1) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
