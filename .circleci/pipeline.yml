@@ -41,7 +41,8 @@ jobs:
                 name: Copy assets
                 command: |
                   mkdir -p /tmp/assets
-                  cp -Rvf ./assets/ /tmp/assets/
+                  cp -Rvf ./pkg/assets/ /tmp/assets/
+                  rm -vf /tmp/assets/**/*.go
             - run:
                 name: Build aoc.wasm
                 command: |
