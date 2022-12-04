@@ -1,0 +1,211 @@
+@font-face {
+  font-family: "FiraCode";
+  src: url("./FiraMono-Medium.ttf");
+}
+
+@font-face {
+  font-family: "FiraCode";
+  src: url("./FiraMono-Regular.ttf");
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: "FiraCode";
+  src: url("./FiraMono-Bold.ttf");
+  font-weight: bold;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+body {
+  padding: 25px;
+}
+
+code,
+pre {
+  font-family: "FiraCode";
+}
+
+label {
+  margin-right: 5px;
+}
+
+main {
+  width: 1050px;
+  text-align: center;
+}
+
+.ansi-console {
+  background-color: rgb(0, 0, 0);
+  color: rgb(229, 229, 229);
+  font-family: "FiraCode";
+  font-size: 12px;
+  border: 2px solid white;
+  border-radius: 2px;
+  max-width: 1024px;
+  height: 768px;
+  text-align: left;
+  padding: 8px;
+  margin: 8px;
+}
+
+#console::before {
+  content: "$ ";
+}
+
+#console::after {
+  content: "_";
+  animation: blinker 1s linear infinite;
+}
+
+.ansi-console span.bold {
+  font-weight: bold;
+}
+
+.ansi-console span.faint {
+  font-weight: lighter;
+}
+
+.ansi-console span.italic {
+  font-style: italic;
+}
+
+.ansi-console span.underline {
+  text-decoration: underline;
+}
+
+.ansi-console span.strikethrough {
+  text-decoration: line-through;
+}
+
+.ansi-console span.fg-black {
+  color: rgb(0, 0, 0);
+}
+
+.ansi-console span.fg-red {
+  color: rgb(205, 49, 49);
+}
+
+.ansi-console span.fg-green {
+  color: rgb(13, 188, 121);
+}
+
+.ansi-console span.fg-yellow {
+  color: rgb(229, 229, 16);
+}
+
+.ansi-console span.fg-blue {
+  color: rgb(36, 114, 200);
+}
+
+.ansi-console span.fg-magenta {
+  color: rgb(188, 63, 188);
+}
+
+.ansi-console span.fg-cyan {
+  color: rgb(17, 168, 205);
+}
+
+.ansi-console span.fg-white {
+  color: rgb(229, 229, 229);
+}
+
+.ansi-console span.bg-black {
+  background-color: rgb(0, 0, 0);
+}
+
+.ansi-console span.bg-red {
+  background-color: rgb(205, 49, 49);
+}
+
+.ansi-console span.bg-green {
+  background-color: rgb(13, 188, 121);
+}
+
+.ansi-console span.bg-yellow {
+  background-color: rgb(229, 229, 16);
+}
+
+.ansi-console span.bg-blue {
+  background-color: rgb(36, 114, 200);
+}
+
+.ansi-console span.bg-magenta {
+  background-color: rgb(188, 63, 188);
+}
+
+.ansi-console span.bg-cyan {
+  background-color: rgb(17, 168, 205);
+}
+
+.ansi-console span.bg-white {
+  background-color: rgb(229, 229, 229);
+}
+
+.ansi-console span.bright-fg-black {
+  color: rgb(102, 102, 102);
+}
+
+.ansi-console span.bright-fg-red {
+  color: rgb(241, 76, 76);
+}
+
+.ansi-console span.bright-fg-green {
+  color: rgb(35, 209, 139);
+}
+
+.ansi-console span.bright-fg-yellow {
+  color: rgb(245, 245, 67);
+}
+
+.ansi-console span.bright-fg-blue {
+  color: rgb(59, 142, 234);
+}
+
+.ansi-console span.bright-fg-magenta {
+  color: rgb(255, 0, 255);
+}
+
+.ansi-console span.bright-fg-cyan {
+  color: rgb(0, 255, 255);
+}
+
+.ansi-console span.bright-fg-white {
+  color: rgb(255, 255, 255);
+}
+
+.ansi-console span.bright-bg-black {
+  background-color: rgb(102, 102, 102);
+}
+
+.ansi-console span.bright-bg-red {
+  background-color: rgb(241, 76, 76);
+}
+
+.ansi-console span.bright-bg-green {
+  background-color: rgb(35, 209, 139);
+}
+
+.ansi-console span.bright-bg-yellow {
+  background-color: rgb(245, 245, 67);
+}
+
+.ansi-console span.bright-bg-blue {
+  background-color: rgb(59, 142, 234);
+}
+
+.ansi-console span.bright-bg-magenta {
+  background-color: rgb(255, 0, 255);
+}
+
+.ansi-console span.bright-bg-cyan {
+  background-color: rgb(0, 255, 255);
+}
+
+.ansi-console span.bright-bg-white {
+  background-color: rgb(255, 255, 255);
+}
