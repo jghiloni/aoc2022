@@ -77,7 +77,7 @@ jobs:
                   fi
                   git clone -b gh-pages ${CIRCLE_REPOSITORY_URL} .
             - attach_workspace:
-                at: /tmp/assets
+                at: /tmp
             - run:
                 name: Copy assets
                 command: |
