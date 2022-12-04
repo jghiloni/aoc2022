@@ -8,6 +8,7 @@ parameters:
   build-docs:
     type: boolean
     description: If true, build the WASM file, and publish to github pages
+    default: false
 
 jobs:
   build-cli:
