@@ -41,15 +41,15 @@ jobs:
                 name: Copy assets
                 command: |
                   mkdir -p /tmp/assets
-                  cp -Rvf ./pkg/assets/ /tmp/assets/
+                  cp -Rvf ./pkg/assets/* /tmp/assets/
                   rm -vf /tmp/assets/**/*.go
             - run:
                 name: Build aoc.wasm
                 command: |
                   GOOS=js GOARCH=wasm go build -o /tmp/assets/js/aoc.wasm -trimpath -ldflags "-X 'github.com/jghiloni/aoc2022/pkg/version.Version=${CIRCLE_SHA1:0:7}'" ./cmd/wasm
             - persist_to_workspace:
-                root: /tmp/assets
-                path: .
+                root: /tmp
+                path: assets
       - unless:
           condition:
             or: [<<pipeline.parameters.build-all>>, <<pipeline.parameters.build-docs>>]
