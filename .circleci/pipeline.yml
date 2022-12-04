@@ -70,7 +70,9 @@ jobs:
                   ssh-keyscan github.com | tee /tmp/gh_knownhosts
                   ed25519_fp=$(ssh-keygen -lf /tmp/gh_knownhosts | grep ED25519 | awk '{print $2}')
                   expected_fp=$(curl https://api.github.com/meta | jq -r '.ssh_key_fingerprints.SHA256_ED25519')
-                  if [[ ${ed25519_fp} == ${expected_fp} ]]; then
+
+                  if [[ ${ed25519_fp} == "SHA256:${expected_fp}" ]]; then
+                    echo "Fingerprints match"
                     cat /tmp/gh_knownhosts >> $HOME/.ssh/known_hosts
                     chmod 600 $HOME/.ssh/known_hosts
                   fi
