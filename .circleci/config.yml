@@ -12,6 +12,6 @@ workflows:
         base-revision: main
         config-path: .circleci/pipeline.yml
         mapping: |
-          cmd/**/*.go build-all true
-          pkg/**/*.go build-all true
-          pkg/assets/* build-docs true
+          \.circleci/.* build-all true
+          .*\.go build-all true
+          pkg/assets/.* build-docs true
