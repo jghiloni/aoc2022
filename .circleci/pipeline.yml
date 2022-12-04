@@ -73,8 +73,7 @@ jobs:
 
                   if [[ ${ed25519_fp} == "SHA256:${expected_fp}" ]]; then
                     echo "Fingerprints match"
-                    cat /tmp/gh_knownhosts >> $HOME/.ssh/known_hosts
-                    chmod 600 $HOME/.ssh/known_hosts
+                    git config core.sshCommand 'ssh -o UserKnownHostsFile=/tmp/gh_knownhosts'
                   fi
                   git clone -b gh-pages ${CIRCLE_REPOSITORY_URL}
             - attach_workspace:
