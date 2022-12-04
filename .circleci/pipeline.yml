@@ -75,7 +75,7 @@ jobs:
                     echo "Fingerprints match"
                     git config --global core.sshCommand 'ssh -o UserKnownHostsFile=/tmp/gh_knownhosts'
                   fi
-                  git clone -b gh-pages ${CIRCLE_REPOSITORY_URL}
+                  git clone -b gh-pages ${CIRCLE_REPOSITORY_URL} .
             - attach_workspace:
                 at: /tmp/assets
             - run:
