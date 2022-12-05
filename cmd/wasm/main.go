@@ -8,10 +8,11 @@ import (
 	"strings"
 	"syscall/js"
 
+	"github.com/jghiloni/aoc2022/pkg/colorize"
 	"github.com/jghiloni/aoc2022/pkg/exercise"
 	"github.com/jghiloni/aoc2022/pkg/inputs"
-	"github.com/jghiloni/aoc2022/pkg/utils"
 	"github.com/jghiloni/aoc2022/pkg/version"
+	"github.com/jghiloni/aoc2022/pkg/wasm"
 )
 
 type exerciseInfo struct {
@@ -65,19 +66,33 @@ func runExercise() js.Func {
 			return errors.New("the third argument must be an HTMLElement")
 		}
 
-		htmlWriter := utils.NewWriter(args[2])
+		out := colorize.NewColorWriter(wasm.NewWriter(args[2]), colorize.NewHTMLColorizer())
+		output := log.New(out,
+			fmt.Sprintf(`{{ colorize "bold;blue" "[%s:part%s] " }}`, exerciseName, part),
+			log.Ltime)
 
 		input, err := inputs.Exercises.Open(exerciseName + ".txt")
 		if err != nil {
 			return fmt.Errorf("error collecting input: %w", err)
 		}
 
-		answer, err := worker(input, htmlWriter, htmlWriter)
+		answer, err := worker(input, output)
+		errStr := ""
+		if err != nil {
+			errStr = err.Error()
+		}
+
 		return map[string]any{
 			"answer": answer,
-			"error":  err,
+			"error":  errStr,
 		}
 	})
+}
+
+func waitForever() {
+	for {
+		<-make(chan bool)
+	}
 }
 
 func main() {
@@ -87,8 +102,7 @@ func main() {
 	js.Global().Set("getExercises", getExercises())
 	js.Global().Set("runExercise", runExercise())
 
-	// this waits till the browser unloads the program
-	<-make(chan bool)
+	waitForever()
 
 	log.Println("Exiting")
 }

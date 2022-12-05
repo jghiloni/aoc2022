@@ -3,8 +3,10 @@ package clicommands
 import (
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/alecthomas/kong"
+	"github.com/jghiloni/aoc2022/pkg/colorize"
 	"github.com/jghiloni/aoc2022/pkg/exercise"
 	"github.com/jghiloni/aoc2022/pkg/inputs"
 	"github.com/nexidian/gocliselect"
@@ -57,7 +59,12 @@ func (r *RunCommand) Run(kCtx *kong.Context) error {
 	}
 	defer inputData.Close()
 
-	answer, err := exerciseFunc(inputData, kCtx.Stdout, kCtx.Stderr)
+	out := colorize.NewColorWriter(kCtx.Stdout, colorize.NewHTMLColorizer())
+	output := log.New(out,
+		fmt.Sprintf(`{{ colorize "bold;blue" "[%s:part%d] " }}`, r.Exercise, part),
+		log.Ltime)
+
+	answer, err := exerciseFunc(inputData, output)
 	if err != nil {
 		return fmt.Errorf("error running exercise %s part %d: %w", r.Exercise, part, err)
 	}

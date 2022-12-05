@@ -16,9 +16,8 @@ func init() {
 	Register("day1", day1{})
 }
 
-func (d day1) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
-	log.SetOutput(stdout)
-	calorieCounts, err := getCalorieCounts(stdin)
+func (d day1) Part1(input io.Reader, output *log.Logger) (any, error) {
+	calorieCounts, err := getCalorieCounts(input)
 	if err != nil {
 		return "", err
 	}
@@ -27,16 +26,16 @@ func (d day1) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 	var richestElf int
 	for i, count := range calorieCounts {
 		if count > maxCalCount {
-			log.Printf("Elf #%d has %d calories in their bag, which is the most we've seen so far ...", i, count)
+			output.Printf("Elf #%d has %d calories in their bag, which is the most we've seen so far ...", i, count)
 			maxCalCount = count
 			richestElf = i
 		}
 	}
 
-	log.Printf("Elf %d has \x1b[1;92m%d\x1b[m calories in their bag!", richestElf, maxCalCount)
+	output.Printf(`Elf %d has {{ colorize "bold;bright-green" "%d" }} calories in their bag!`, richestElf, maxCalCount)
 	return maxCalCount, nil
 }
-func (d day1) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+func (d day1) Part2(stdin io.Reader, output *log.Logger) (any, error) {
 	calorieCounts, err := getCalorieCounts(stdin)
 	if err != nil {
 		return "", err
@@ -48,7 +47,7 @@ func (d day1) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 		return calorieCounts[i] > calorieCounts[j]
 	})
 
-	log.Printf("The top 3 elves' bags have %d, %d, and %d calories", calorieCounts[0], calorieCounts[1], calorieCounts[2])
+	output.Printf("The top 3 elves' bags have %d, %d, and %d calories", calorieCounts[0], calorieCounts[1], calorieCounts[2])
 	return calorieCounts[0] + calorieCounts[1] + calorieCounts[2], nil
 }
 

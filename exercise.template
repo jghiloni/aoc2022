@@ -3,6 +3,7 @@ package exercise
 import (
 	"io"
 	"errors"
+	"log"
 )
 
 type day{{.Day}} struct{}
@@ -11,11 +12,11 @@ func init() {
 	Register("day{{.Day}}", day{{.Day}}{})
 }
 
-func (d day{{.Day}}) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+func (d day{{.Day}}) Part1(input io.Reader, output *log.Logger) (any, error) {
     return nil, errors.New("Unimplemented")
 }
 
-func (d day{{.Day}}) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+func (d day{{.Day}}) Part2(input io.Reader, output *log.Logger) (any, error) {
     return nil, errors.New("Unimplemented")
 }
 

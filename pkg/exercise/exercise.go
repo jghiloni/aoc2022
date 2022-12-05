@@ -2,15 +2,16 @@ package exercise
 
 import (
 	"io"
+	"log"
 	"sort"
 	"sync"
 )
 
-type ExercisePart func(io.Reader, io.Writer, io.Writer) (any, error)
+type ExercisePart func(io.Reader, *log.Logger) (any, error)
 
 type Exercise interface {
-	Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error)
-	Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error)
+	Part1(input io.Reader, output *log.Logger) (any, error)
+	Part2(input io.Reader, output *log.Logger) (any, error)
 }
 
 var exerciseRegistry map[string]Exercise = map[string]Exercise{}

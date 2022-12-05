@@ -1,8 +1,8 @@
 package exercise
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"strings"
 
 	"github.com/jghiloni/aoc2022/pkg/utils"
@@ -17,7 +17,7 @@ func init() {
 	Register("day3", day3{})
 }
 
-func (d day3) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+func (d day3) Part1(stdin io.Reader, output *log.Logger) (any, error) {
 	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return nil, err
@@ -26,14 +26,14 @@ func (d day3) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 	totalPriorities := 0
 	for _, line := range lines {
 		intersection := getCompartmentIntersection(line)
-		fmt.Fprintf(stdout, "Compartments share the following items: %q\n", intersection)
+		output.Printf("Compartments share the following items: %q\n", intersection)
 		totalPriorities += calculatePriorities(intersection)
 	}
 
 	return totalPriorities, nil
 }
 
-func (d day3) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
+func (d day3) Part2(stdin io.Reader, output *log.Logger) (any, error) {
 	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (d day3) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 			continue
 		}
 
-		fmt.Fprintf(stdout, "Bags %d, %d, and %d have badge %s\n", i, i+1, i+2, string(badge))
+		output.Printf("Bags %d, %d, and %d have badge %s\n", i, i+1, i+2, string(badge))
 		totalPriorities += strings.IndexRune(priorities, badge)
 	}
 

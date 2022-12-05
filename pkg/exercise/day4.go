@@ -93,10 +93,7 @@ func init() {
 	Register("day4", day4{})
 }
 
-func (d day4) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
-	outLog := log.New(stdout, "\x1b[1;34m[Day 4 Part 1]\x1b[m \x1b[1;32m[STDOUT]\x1b[m ", log.Default().Flags())
-	errLog := log.New(stderr, "\x1b[1;34m[Day 4 Part 1]\x1b[m \x1b[1;31m[STDERR]\x1b[m ", log.Default().Flags())
-
+func (d day4) Part1(stdin io.Reader, output *log.Logger) (any, error) {
 	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return nil, err
@@ -106,23 +103,20 @@ func (d day4) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 	for i, line := range lines {
 		overlap, err := hasTotalOverlap(line)
 		if err != nil {
-			errLog.Printf("An error occurred: %v", err)
+			output.Printf(`{{ colorize "bold;red" "An error occurred: %v" }}`, err)
 			return nil, err
 		}
 
 		if overlap {
 			answer++
-			outLog.Printf("There is total overlap in line %d: %s. Current total: %d", i+1, line, answer)
+			output.Printf("There is total overlap in line %d: %s. Current total: %d", i+1, line, answer)
 		}
 	}
 
 	return answer, nil
 }
 
-func (d day4) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
-	outLog := log.New(stdout, "\x1b[1;34m[Day 4 Part 2]\x1b[m \x1b[1;32m[STDOUT]\x1b[m ", log.Default().Flags())
-	errLog := log.New(stderr, "\x1b[1;34m[Day 4 Part 2]\x1b[m \x1b[1;31m[STDERR]\x1b[m ", log.Default().Flags())
-
+func (d day4) Part2(stdin io.Reader, output *log.Logger) (any, error) {
 	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return nil, err
@@ -132,13 +126,13 @@ func (d day4) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 	for i, line := range lines {
 		overlap, err := hasPartialOverlap(line)
 		if err != nil {
-			errLog.Printf("An error occurred: %v", err)
+			output.Printf(`{{ colorize "bold;red" "An error occurred: %v" }}`, err)
 			return nil, err
 		}
 
 		if overlap {
 			answer++
-			outLog.Printf("There is partial overlap in line %d: %s. Current total: %d", i+1, line, answer)
+			output.Printf("There is partial overlap in line %d: %s. Current total: %d", i+1, line, answer)
 		}
 	}
 

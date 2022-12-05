@@ -138,8 +138,7 @@ func satisfyStrategy(theirPlay play, strategy result) play {
 	}
 }
 
-func (d day2) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
-	logger := log.New(stderr, log.Default().Prefix(), log.Default().Flags())
+func (d day2) Part1(stdin io.Reader, logger *log.Logger) (any, error) {
 	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return "", err
@@ -161,9 +160,7 @@ func (d day2) Part1(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, e
 	return totalScore, nil
 }
 
-func (d day2) Part2(stdin io.Reader, stdout io.Writer, stderr io.Writer) (any, error) {
-	logger := log.New(stderr, log.Default().Prefix(), log.Default().Flags())
-
+func (d day2) Part2(stdin io.Reader, logger *log.Logger) (any, error) {
 	lines, err := utils.ReaderToLines(stdin)
 	if err != nil {
 		return "", err
