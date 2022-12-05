@@ -21,6 +21,12 @@
   }
 }
 
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}
+
 body {
   padding: 25px;
 }
@@ -63,6 +69,15 @@ main {
   animation: blinker 1s linear infinite;
 }
 
+.ansi-console div.line {
+  animation-name: typing;
+  animation-delay: 50;
+  animation-duration: 200;
+  animation-timing-function: steps(100, end);
+  animation-iteration-count: 1;
+
+}
+
 .ansi-console span.bold {
   font-weight: bold;
 }
@@ -83,35 +98,35 @@ main {
   text-decoration: line-through;
 }
 
-.ansi-console span.fg-black {
+.ansi-console span.black {
   color: rgb(0, 0, 0);
 }
 
-.ansi-console span.fg-red {
+.ansi-console span.red {
   color: rgb(205, 49, 49);
 }
 
-.ansi-console span.fg-green {
+.ansi-console span.green {
   color: rgb(13, 188, 121);
 }
 
-.ansi-console span.fg-yellow {
+.ansi-console span.yellow {
   color: rgb(229, 229, 16);
 }
 
-.ansi-console span.fg-blue {
+.ansi-console span.blue {
   color: rgb(36, 114, 200);
 }
 
-.ansi-console span.fg-magenta {
+.ansi-console span.magenta {
   color: rgb(188, 63, 188);
 }
 
-.ansi-console span.fg-cyan {
+.ansi-console span.cyan {
   color: rgb(17, 168, 205);
 }
 
-.ansi-console span.fg-white {
+.ansi-console span.white {
   color: rgb(229, 229, 229);
 }
 
@@ -147,35 +162,35 @@ main {
   background-color: rgb(229, 229, 229);
 }
 
-.ansi-console span.bright-fg-black {
+.ansi-console span.bright-black {
   color: rgb(102, 102, 102);
 }
 
-.ansi-console span.bright-fg-red {
+.ansi-console span.bright-red {
   color: rgb(241, 76, 76);
 }
 
-.ansi-console span.bright-fg-green {
+.ansi-console span.bright-green {
   color: rgb(35, 209, 139);
 }
 
-.ansi-console span.bright-fg-yellow {
+.ansi-console span.bright-yellow {
   color: rgb(245, 245, 67);
 }
 
-.ansi-console span.bright-fg-blue {
+.ansi-console span.bright-blue {
   color: rgb(59, 142, 234);
 }
 
-.ansi-console span.bright-fg-magenta {
+.ansi-console span.bright-magenta {
   color: rgb(255, 0, 255);
 }
 
-.ansi-console span.bright-fg-cyan {
+.ansi-console span.bright-cyan {
   color: rgb(0, 255, 255);
 }
 
-.ansi-console span.bright-fg-white {
+.ansi-console span.bright-white {
   color: rgb(255, 255, 255);
 }
 

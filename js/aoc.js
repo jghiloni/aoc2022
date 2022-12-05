@@ -26,17 +26,34 @@ const doRun = () => {
   const part = document.getElementById("part").value;
   const shell = document.getElementById("console");
   const answerBox = document.getElementById("answer");
+  const runBtn = document.getElementById("run-exercise");
 
-  shell.innerHTML += `run ${exercise} part${part}<br/>`
+  runBtn.disabled = true;
+
+  const typedLine = document.createElement("div");
+  typedLine.className = "line";
+  typedLine.style.display = "inline";
+
+  const typedText = document.createElement("span");
+  typedText.className = "bold green";
+  typedText.innerHTML = `run ${exercise} part${part}<br/>`;
+  
+  typedLine.appendChild(typedText);
+  shell.appendChild(typedLine);
+
   const result = runExercise(exercise, part, shell);
+
   if (result.error) {
     console.error(result.error);
   }
 
   answerBox.value = result.answer.toString();
-  shell.innerHTML += "<br/>$ ";
+  const cmdPrompt = document.createElement("div");
+  cmdPrompt.style.display = "inline";
+  cmdPrompt.innerHTML = "$&nbsp;";
+  shell.appendChild(cmdPrompt);
 
-  // go.run(wasm);
+  runBtn.disabled = false;
 }
 
 if (!WebAssembly.instantiateStreaming) {
