@@ -32,7 +32,6 @@ const (
 
 type ansiColorizer struct {
 	funcName string
-	t        *template.Template
 }
 
 var codeMap = map[string]int{
@@ -84,10 +83,6 @@ func NewANSIColorizer(opts ...ColorizerOption) Colorizer {
 		opt(c)
 	}
 
-	c.t = template.New("ansiColor").Funcs(template.FuncMap{
-		c.funcName: c.colorize,
-	})
-
 	return c
 }
 
@@ -96,17 +91,23 @@ func (a *ansiColorizer) setCustomFunction(name string) {
 }
 
 func (a *ansiColorizer) Format(str string) string {
-	t, err := a.t.Parse(str)
+	t, err := a.newTemplate(str)
 	if err != nil {
-		return err.Error()
+		return fmt.Sprintln(err)
 	}
 
 	b := &bytes.Buffer{}
 	if err = t.Execute(b, nil); err != nil {
-		return err.Error()
+		return fmt.Sprintln(err)
 	}
 
 	return b.String()
+}
+
+func (a *ansiColorizer) newTemplate(str string) (*template.Template, error) {
+	return template.New("ansiColor").Funcs(template.FuncMap{
+		a.funcName: a.colorize,
+	}).Parse(str)
 }
 
 func (a *ansiColorizer) colorize(format string, text string) string {

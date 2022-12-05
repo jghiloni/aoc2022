@@ -59,7 +59,7 @@ func (r *RunCommand) Run(kCtx *kong.Context) error {
 	}
 	defer inputData.Close()
 
-	out := colorize.NewColorWriter(kCtx.Stdout, colorize.NewHTMLColorizer())
+	out := colorize.NewColorWriter(kCtx.Stdout, colorize.NewANSIColorizer())
 	output := log.New(out,
 		fmt.Sprintf(`{{ colorize "bold;blue" "[%s:part%d] " }}`, r.Exercise, part),
 		log.Ltime)
