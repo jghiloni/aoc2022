@@ -4,6 +4,7 @@ let wasm;
 const setPage = () => {
   const select = document.getElementById("exercise");
   const runBtn = document.getElementById("run-exercise");
+  const shell = document.getElementById("console");
 
   document.getElementById("version").innerText = aocVersion;
 
@@ -19,7 +20,22 @@ const setPage = () => {
   });
 
   runBtn.addEventListener("click", doRun);
+  shell.addEventListener("output", printLine)
 };
+
+const printLine = (event) => {
+  const line = event.detail;
+  line.style.width = "0";
+
+  event.target.appendChild(line);
+  line.animate([{ from: { width: 0 } }, { to: { width: "100%" } }], {
+    duration: 500 * line.textContent.length,
+    fill: "forwards",
+    iterations: 1,
+    easing: `steps(${line.textContent.length}, end)`
+  });
+  line.style.removeProperty("width");
+}
 
 const doRun = () => {
   const exercise = document.getElementById("exercise").value;
@@ -37,7 +53,7 @@ const doRun = () => {
   const typedText = document.createElement("span");
   typedText.className = "bold green";
   typedText.innerHTML = `run ${exercise} part${part}<br/>`;
-  
+
   typedLine.appendChild(typedText);
   shell.appendChild(typedLine);
 

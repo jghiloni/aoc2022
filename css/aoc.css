@@ -69,14 +69,6 @@ main {
   animation: blinker 1s linear infinite;
 }
 
-.ansi-console div.line {
-  animation-name: typing;
-  animation-delay: 50;
-  animation-duration: 200;
-  animation-timing-function: steps(100, end);
-  animation-iteration-count: 1;
-
-}
 
 .ansi-console span.bold {
   font-weight: bold;
