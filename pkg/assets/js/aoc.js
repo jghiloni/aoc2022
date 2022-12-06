@@ -1,53 +1,105 @@
-const go = new Go();
-let wasm;
+const workerPromises = {};
+let worker;
 
-const setPage = () => {
-  const select = document.getElementById("exercise");
-  const runBtn = document.getElementById("run-exercise");
-  const shell = document.getElementById("console");
+const receiveWorkerMessage = (event) => {
+  const msg = event.data;
+  const id = msg.id;
+  switch (msg.type) {
+    case "wasm-ready":
+      initializePage();
+      return;
+    case "output":
+      const shell = document.getElementById("console");
+      const output = msg.output;
 
-  document.getElementById("version").innerText = aocVersion;
+      const line = document.createElement("div");
+      line.innerHTML = output;
 
-  const infos = JSON.parse(getExercises());
-  console.log(infos);
-  infos.forEach((info) => {
-    select.add(new Option(info.name, info.value));
-  });
-  select.disabled = false;
+      shell.appendChild(line);
+      return;
+    case "results":
+      const { results, error } = msg;
+      const fp = workerPromises[id];
+      if (fp) {
+        delete workerPromises[id];
+        if (error) {
+          fp.reject(error);
+          return;
+        }
 
-  select.addEventListener("change", (event) => {
-    runBtn.disabled = (event.target.value === "");
-  });
-
-  runBtn.addEventListener("click", doRun);
-  shell.addEventListener("output", printLine)
-};
-
-const printLine = (event) => {
-  const line = event.detail;
-  line.style.width = "0";
-
-  event.target.appendChild(line);
-  line.animate([{ from: { width: 0 } }, { to: { width: "100%" } }], {
-    duration: 500 * line.textContent.length,
-    fill: "forwards",
-    iterations: 1,
-    easing: `steps(${line.textContent.length}, end)`
-  });
-  line.style.removeProperty("width");
+        fp.resolve(results);
+      }
+      return;
+    case "var":
+      const { value } = msg;
+      const vp = workerPromises[id];
+      if (vp) {
+        delete workerPromises[id];
+        vp.resolve(value);
+      }
+      return;
+  }
 }
 
-const doRun = () => {
+const getVariableFromWasm = async (varName) => {
+  const id = `gv-${Date.now()}`;
+  return new Promise((resolve, reject) => {
+    workerPromises[id] = { resolve, reject };
+    worker.postMessage({
+      id: id,
+      type: "wasmVariable",
+      name: varName
+    });
+  });
+}
+
+const callWasmFunction = async (functionName, ...args) => {
+  const id = `fc-${Date.now()}`;
+  return new Promise((resolve, reject) => {
+    workerPromises[id] = { resolve, reject };
+    worker.postMessage({
+      id: id,
+      type: "wasmFunction",
+      name: functionName,
+      arguments: args,
+    });
+  });
+}
+
+const initializePage = () => {
+  const select = document.getElementById("exercise");
+  const runBtn = document.getElementById("run-exercise");
+
+  getVariableFromWasm("aocVersion").then((result) => {
+    document.getElementById("version").innerText = result;
+  }).catch((err) => {
+    console.error(err);
+  })
+
+  callWasmFunction("getExercises").then((exercisesJSON) => {
+    const exercises = JSON.parse(exercisesJSON);
+    exercises.forEach((exercise) => {
+      select.add(new Option(exercise.name, exercise.value));
+    });
+
+    select.disabled = false;
+    select.addEventListener("change", (event) => {
+      runBtn.disabled = (event.target.value === "");
+    });
+
+    runBtn.addEventListener("click", runExercise);
+  })
+};
+
+const runExercise = (event) => {
+  event.target.disabled = true;
+
   const exercise = document.getElementById("exercise").value;
   const part = document.getElementById("part").value;
   const shell = document.getElementById("console");
   const answerBox = document.getElementById("answer");
-  const runBtn = document.getElementById("run-exercise");
-
-  runBtn.disabled = true;
 
   const typedLine = document.createElement("div");
-  typedLine.className = "line";
   typedLine.style.display = "inline";
 
   const typedText = document.createElement("span");
@@ -57,31 +109,26 @@ const doRun = () => {
   typedLine.appendChild(typedText);
   shell.appendChild(typedLine);
 
-  const result = runExercise(exercise, part, shell);
+  callWasmFunction("runExercise", exercise, part).then((answer) => {
+    answerBox.value = answer;
+  }).catch((err) => {
+    console.error(err);
+  }).finally(() => {
+    const cmdPrompt = document.createElement("div");
+    cmdPrompt.style.display = "inline";
+    cmdPrompt.innerHTML = "$&nbsp;";
+    shell.appendChild(cmdPrompt);
 
-  if (result.error) {
-    console.error(result.error);
-  }
-
-  answerBox.value = result.answer.toString();
-  const cmdPrompt = document.createElement("div");
-  cmdPrompt.style.display = "inline";
-  cmdPrompt.innerHTML = "$&nbsp;";
-  shell.appendChild(cmdPrompt);
-
-  runBtn.disabled = false;
+    event.target.disabled = false;
+  })
 }
 
-if (!WebAssembly.instantiateStreaming) {
-  // polyfill
-  WebAssembly.instantiateStreaming = async (resp, importObject) => {
-    const source = await (await resp).arrayBuffer();
-    return await WebAssembly.instantiate(source, importObject);
-  };
-}
+window.addEventListener("DOMContentLoaded", () => {
+  worker = new Worker("./js/wasm-worker.js");
+  worker.addEventListener("message", receiveWorkerMessage);
+  worker.addEventListener("error", (e) => {
+    console.error(e);
+  });
 
-WebAssembly.instantiateStreaming(fetch("js/aoc.wasm"), go.importObject).then(result => {
-  wasm = result.instance;
-  go.run(wasm);
-  setPage();
+  worker.postMessage({ type: "wasmInit" });
 });

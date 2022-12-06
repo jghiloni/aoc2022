@@ -6,34 +6,31 @@ import (
 	"io"
 	"strings"
 	"syscall/js"
+	"time"
 )
 
 type htmlWriter struct {
-	console  js.Value
-	document js.Value
+	delay time.Duration
 }
 
-func NewWriter(console js.Value) io.Writer {
+func NewWriter(delay time.Duration) io.Writer {
 	return &htmlWriter{
-		console:  console,
-		document: js.Global().Get("document"),
+		delay: delay,
 	}
 }
 
 func (h *htmlWriter) Write(ih []byte) (int, error) {
 	innerHTML := strings.TrimSuffix(string(ih), "\n")
+	retLen := len(innerHTML)
+
 	innerHTML = strings.ReplaceAll(innerHTML, "\n", "<br/>")
 
-	div := h.document.Call("createElement", "div")
-	div.Set("className", "line")
-	div.Set("innerHTML", innerHTML)
-
-	eventOptions := map[string]any{
-		"detail": div,
+	message := map[string]any{
+		"output": innerHTML,
 	}
 
-	event := js.Global().Get("CustomEvent").New("output", eventOptions)
-	h.console.Call("dispatchEvent", event)
+	js.Global().Call("postMessage", message)
+	time.Sleep(h.delay)
 
-	return len(ih), nil
+	return retLen, nil
 }

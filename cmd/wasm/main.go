@@ -7,6 +7,7 @@ import (
 	"log"
 	"strings"
 	"syscall/js"
+	"time"
 
 	"github.com/jghiloni/aoc2022/pkg/colorize"
 	"github.com/jghiloni/aoc2022/pkg/exercise"
@@ -66,7 +67,7 @@ func runExercise() js.Func {
 			return errors.New("the third argument must be an HTMLElement")
 		}
 
-		out := colorize.NewColorWriter(wasm.NewWriter(args[2]), colorize.NewHTMLColorizer())
+		out := colorize.NewColorWriter(wasm.NewWriter(100*time.Millisecond), colorize.NewHTMLColorizer())
 		output := log.New(out,
 			fmt.Sprintf(`{{ colorize "bold;blue" "[%s:part%s] " }}`, exerciseName, part),
 			log.Ltime)
