@@ -3,7 +3,6 @@
 package wasm
 
 import (
-	"fmt"
 	"io"
 	"strings"
 	"syscall/js"
@@ -25,21 +24,16 @@ func (h *htmlWriter) Write(ih []byte) (int, error) {
 	innerHTML := strings.TrimSuffix(string(ih), "\n")
 	innerHTML = strings.ReplaceAll(innerHTML, "\n", "<br/>")
 
-	parser := js.Global().Get("DOMParser").New()
-	parsed := parser.Call("parseFromString", innerHTML, "text/html")
-	children := parsed.Call("getElementsByTagName", "body").Index(0).Get("childNodes")
-
-	fragment := h.document.Call("createDocumentFragment")
-	for children.Length() > 0 {
-		fragment.Call("append", children.Index(0))
-	}
-
-	fmt.Println(fragment)
-
 	div := h.document.Call("createElement", "div")
 	div.Set("className", "line")
-	div.Call("appendChild", fragment)
+	div.Set("innerHTML", innerHTML)
 
-	h.console.Call("appendChild", div)
+	eventOptions := map[string]any{
+		"detail": div,
+	}
+
+	event := js.Global().Get("CustomEvent").New("output", eventOptions)
+	h.console.Call("dispatchEvent", event)
+
 	return len(ih), nil
 }

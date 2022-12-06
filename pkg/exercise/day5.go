@@ -26,7 +26,7 @@ func (d day5) Part1(input io.Reader, output *log.Logger) (any, error) {
 	stacks, actions := prepareStacks(lines)
 	for _, action := range actions {
 		if stacks, err = performActionWithCrateMaster9000(action, stacks); err != nil {
-			output.Printf(`{{ colorize "red" "An error occurred performing action %q: %v" }}`, action, err)
+			output.Printf(`{{ colorize "red" "An error occurred performing action [%s]: %v" }}`, action, err)
 			return nil, err
 		}
 
