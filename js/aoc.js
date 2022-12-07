@@ -16,6 +16,7 @@ const receiveWorkerMessage = (event) => {
       line.innerHTML = output;
 
       shell.appendChild(line);
+      line.scrollIntoView();
       return;
     case "results":
       const { results, error } = msg;
@@ -42,7 +43,7 @@ const receiveWorkerMessage = (event) => {
 }
 
 const getVariableFromWasm = async (varName) => {
-  const id = `gv-${Date.now()}`;
+  const id = `gv-${varName}-${Date.now()}`;
   return new Promise((resolve, reject) => {
     workerPromises[id] = { resolve, reject };
     worker.postMessage({
@@ -54,7 +55,7 @@ const getVariableFromWasm = async (varName) => {
 }
 
 const callWasmFunction = async (functionName, ...args) => {
-  const id = `fc-${Date.now()}`;
+  const id = `fc-${functionName}-${Date.now()}`;
   return new Promise((resolve, reject) => {
     workerPromises[id] = { resolve, reject };
     worker.postMessage({
@@ -76,8 +77,7 @@ const initializePage = () => {
     console.error(err);
   })
 
-  callWasmFunction("getExercises").then((exercisesJSON) => {
-    const exercises = JSON.parse(exercisesJSON);
+  getVariableFromWasm("exercises").then((exercises) => {
     exercises.forEach((exercise) => {
       select.add(new Option(exercise.name, exercise.value));
     });
@@ -109,7 +109,8 @@ const runExercise = (event) => {
   typedLine.appendChild(typedText);
   shell.appendChild(typedLine);
 
-  callWasmFunction("runExercise", exercise, part).then((answer) => {
+  answerBox.value = "";
+  callWasmFunction("runExercise", exercise, part, "2ms").then((answer) => {
     answerBox.value = answer;
   }).catch((err) => {
     console.error(err);
