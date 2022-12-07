@@ -44,3 +44,12 @@ func (s *Stack[T]) Peek() T {
 func (s *Stack[T]) Size() int {
 	return len(s.s)
 }
+
+func (s *Stack[T]) ToFIFOSlice() []T {
+	retVal := make([]T, len(s.s))
+	for i := range s.s {
+		retVal[len(s.s)-i-1] = s.s[i]
+	}
+
+	return retVal
+}
