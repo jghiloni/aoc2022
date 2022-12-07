@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -16,31 +14,18 @@ import (
 	"github.com/jghiloni/aoc2022/pkg/wasm"
 )
 
-type exerciseInfo struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
-
-func getExercises() js.Func {
+func getExercises() js.Value {
 	exercises := exercise.ListRegistered()
 
-	infos := make([]exerciseInfo, len(exercises))
+	infos := make([]any, len(exercises))
 	for i := range infos {
-		infos[i] = exerciseInfo{
-			Name:  strings.Replace(exercises[i], "day", "Day ", 1),
-			Value: exercises[i],
+		infos[i] = map[string]any{
+			"name":  strings.Replace(exercises[i], "day", "Day ", 1),
+			"value": exercises[i],
 		}
 	}
 
-	return js.FuncOf(func(this js.Value, args []js.Value) any {
-		jsonBytes, err := json.MarshalIndent(infos, "", "  ")
-		if err != nil {
-			fmt.Printf("unable to marshal json: %v\n", err)
-			return err.Error()
-		}
-
-		return string(jsonBytes)
-	})
+	return js.ValueOf(infos)
 }
 
 func runExercise() js.Func {
@@ -63,11 +48,17 @@ func runExercise() js.Func {
 			return fmt.Errorf("invalid exercise part %q", part)
 		}
 
-		if !args[2].Truthy() {
-			return errors.New("the third argument must be an HTMLElement")
+		delay := 100 * time.Millisecond
+		if len(args) == 3 {
+			dur := args[2].String()
+
+			var err error
+			if delay, err = time.ParseDuration(dur); err != nil {
+				fmt.Printf("invalid duration %s\n", dur)
+			}
 		}
 
-		out := colorize.NewColorWriter(wasm.NewWriter(100*time.Millisecond), colorize.NewHTMLColorizer())
+		out := colorize.NewColorWriter(wasm.NewWriter(delay), colorize.NewHTMLColorizer())
 		output := log.New(out,
 			fmt.Sprintf(`{{ colorize "bold;blue" "[%s:part%s] " }}`, exerciseName, part),
 			log.Ltime)
@@ -100,7 +91,7 @@ func main() {
 	fmt.Println("Go WebAssembly")
 
 	js.Global().Set("aocVersion", js.ValueOf(version.Version))
-	js.Global().Set("getExercises", getExercises())
+	js.Global().Set("exercises", getExercises())
 	js.Global().Set("runExercise", runExercise())
 
 	waitForever()

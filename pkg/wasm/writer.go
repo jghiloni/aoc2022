@@ -26,6 +26,7 @@ func (h *htmlWriter) Write(ih []byte) (int, error) {
 	innerHTML = strings.ReplaceAll(innerHTML, "\n", "<br/>")
 
 	message := map[string]any{
+		"type":   "output",
 		"output": innerHTML,
 	}
 

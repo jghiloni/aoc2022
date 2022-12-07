@@ -40,9 +40,15 @@ label {
   margin-right: 5px;
 }
 
-main {
-  width: 1050px;
+header {
+  width: 80%;
+  margin: auto;
   text-align: center;
+}
+
+main {
+  width: 80%;
+  margin: auto;
 }
 
 .ansi-console {
@@ -52,12 +58,16 @@ main {
   font-size: 12px;
   border: 2px solid white;
   border-radius: 2px;
-  max-width: 1024px;
-  height: 768px;
+  width: 100%;
+  min-height: 320px;
+  height: 33vh;
+  max-height: 33vh;
   text-align: left;
   padding: 8px;
-  margin: 8px;
-  overflow: auto;
+  margin: auto;
+  word-wrap: break-word;
+  overflow-y: scroll;
+  display: block;
 }
 
 #console::before {
