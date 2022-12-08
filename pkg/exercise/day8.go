@@ -41,7 +41,7 @@ func (d day8) Part1(input io.Reader, output *log.Logger) (any, error) {
 				}
 
 				if v {
-					output.Printf(`Tree at {{ colorize "bold;yellow" "%dx%d" }} is visible from the {{ colorize "bold;bright-cyan" "%s" }}`, row+1, col+1, direction)
+					output.Printf(`Tree at {{ colorize "bold;yellow" "%02d✕%02d" }} is visible from the {{ colorize "bold;bright-cyan" "%s" }}`, row+1, col+1, direction)
 				}
 
 				visible = visible || v
@@ -67,7 +67,7 @@ func (d day8) Part2(input io.Reader, output *log.Logger) (any, error) {
 	for row := 1; row < len(canopy)-1; row++ {
 		for col := 1; col < len(canopy[row])-1; col++ {
 			visibilityScore := 1
-			msg := fmt.Sprintf(`The tree at {{ colorize "bold;yellow" "%dx%d" }} has a visibility score of (`, row, col)
+			msg := fmt.Sprintf(`The tree at {{ colorize "bold;yellow" "%02d✕%02d" }} has a visibility score of (`, row, col)
 			for _, direction := range utils.Directions {
 				dirScore := canopy.GetVisibilityScore(row, col, direction)
 				msg = fmt.Sprintf(`%s{{ colorize "bold;bright-%s" "%02d" }} * `, msg, colorMap[direction], dirScore)
@@ -78,7 +78,7 @@ func (d day8) Part2(input io.Reader, output *log.Logger) (any, error) {
 			output.Printf(`%s) = {{ colorize "bold;bright-yellow" "%d" }}`, strings.TrimSuffix(msg, " * "), visibilityScore)
 			if visibilityScore > highestVisibilityScore {
 				highestVisibilityScore = visibilityScore
-				output.Printf(`The current highest visibility score of {{ colorize "bold;bright-cyan" "%d" }} is at tree {{ colorize "bold;yellow" "%dx%d" }}`, highestVisibilityScore, row, col)
+				output.Printf(`The current highest visibility score of {{ colorize "bold;bright-cyan" "%d" }} is at tree {{ colorize "bold;yellow" "%02d✕%02d" }}`, highestVisibilityScore, row, col)
 			}
 		}
 	}
