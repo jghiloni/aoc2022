@@ -28,7 +28,15 @@
 }
 
 body {
-  padding: 25px;
+  padding-left: 25px;
+  padding-right: 25px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body footer {
+  padding-bottom: 10px;
 }
 
 code,
