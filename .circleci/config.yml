@@ -15,3 +15,5 @@ workflows:
           \.circleci/.* build-all true
           .*\.go build-all true
           pkg/assets/.* build-docs true
+    branches:
+      only: main
