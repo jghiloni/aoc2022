@@ -6,11 +6,12 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 
-	"github.com/alecthomas/kong"
 	"github.com/jghiloni/aoc2022/pkg/colorize"
 	"github.com/jghiloni/aoc2022/pkg/exercise"
 	"github.com/jghiloni/aoc2022/pkg/inputs"
+	"github.com/mattn/go-isatty"
 	"github.com/nexidian/gocliselect"
 )
 
@@ -19,7 +20,7 @@ type RunCommand struct {
 	Part     int    `short:"p" description:"Which part of the exercise to run (1 or 2). Interactive if not specified or invalid"`
 }
 
-func (r *RunCommand) Run(kCtx *kong.Context) error {
+func (r *RunCommand) Run() error {
 	var (
 		e     exercise.Exercise
 		part  int
@@ -28,7 +29,7 @@ func (r *RunCommand) Run(kCtx *kong.Context) error {
 
 	if r.Exercise != "" {
 		if e, found = exercise.GetExercise(r.Exercise); !found {
-			fmt.Fprintf(kCtx.Stderr, "Could not find exercise %s, launching interactive mode", r.Exercise)
+			fmt.Fprintf(os.Stderr, "Could not find exercise %s, launching interactive mode", r.Exercise)
 		}
 	}
 
@@ -61,7 +62,12 @@ func (r *RunCommand) Run(kCtx *kong.Context) error {
 	}
 	defer inputData.Close()
 
-	out := colorize.NewColorWriter(kCtx.Stdout, colorize.NewANSIColorizer())
+	colorizer := colorize.NewNoopColorizer()
+	if isatty.IsTerminal(os.Stdout.Fd()) || isatty.IsCygwinTerminal(os.Stdout.Fd()) {
+		colorizer = colorize.NewANSIColorizer()
+	}
+
+	out := colorize.NewColorWriter(os.Stdout, colorizer)
 	output := log.New(out,
 		fmt.Sprintf(`{{ colorize "bold;blue" "[%s:part%d] " }}`, r.Exercise, part),
 		log.Ltime)
@@ -71,7 +77,7 @@ func (r *RunCommand) Run(kCtx *kong.Context) error {
 		return fmt.Errorf("error running exercise %s part %d: %w", r.Exercise, part, err)
 	}
 
-	fmt.Fprintln(kCtx.Stdout, "ANSWER: ", answer)
+	fmt.Println("ANSWER: ", answer)
 	return nil
 }
 
