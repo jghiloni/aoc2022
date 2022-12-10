@@ -17,14 +17,14 @@ func init() {
 }
 
 func (d day9) Part1(input io.Reader, output *log.Logger) (any, error) {
-	return runCommands(input, output, 2)
+	return d.runCommands(input, output, 2)
 }
 
 func (d day9) Part2(input io.Reader, output *log.Logger) (any, error) {
-	return runCommands(input, output, 10)
+	return d.runCommands(input, output, 10)
 }
 
-func runCommands(input io.Reader, output *log.Logger, numKnots int) (any, error) {
+func (d day9) runCommands(input io.Reader, output *log.Logger, numKnots int) (any, error) {
 	rope := utils.NewRopeBridge(numKnots)
 
 	commands, err := utils.ReaderToLines(input)

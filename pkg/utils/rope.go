@@ -72,7 +72,7 @@ func (r *RopeBridge) isKnotInPosition(i int) bool {
 	xDistance := r.knots[i].X - r.knots[i-1].X
 	yDistance := r.knots[i].Y - r.knots[i-1].Y
 
-	return abs(xDistance) <= 1 && abs(yDistance) <= 1
+	return Abs(xDistance) <= 1 && Abs(yDistance) <= 1
 }
 
 func (r *RopeBridge) reposition() {
@@ -90,9 +90,9 @@ func (r *RopeBridge) repositionKnot(i int) {
 	tail := r.knots[i]
 
 	vecDeltaX := head.X - tail.X
-	magDeltaX := abs(vecDeltaX)
+	magDeltaX := Abs(vecDeltaX)
 	vecDeltaY := head.Y - tail.Y
-	magDeltaY := abs(vecDeltaY)
+	magDeltaY := Abs(vecDeltaY)
 	moveX := 0
 	moveY := 0
 	if magDeltaX > 1 {
@@ -123,7 +123,7 @@ func (r *RopeBridge) visit() {
 	}
 }
 
-func abs(a int) int {
+func Abs(a int) int {
 	if a < 0 {
 		return -a
 	}
