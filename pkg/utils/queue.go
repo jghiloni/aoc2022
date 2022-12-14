@@ -20,6 +20,14 @@ func (s *Queue[T]) Push(item T) int {
 	return len(s.s)
 }
 
+func (s *Queue[T]) PushAll(items ...T) int {
+	for _, item := range items {
+		s.Push(item)
+	}
+
+	return len(s.s)
+}
+
 func (s *Queue[T]) Pop() (T, int) {
 	if len(s.s) == 0 {
 		tp := new(T)
@@ -57,4 +65,8 @@ func (s *Queue[T]) Join(sep string) string {
 	}
 
 	return strings.TrimPrefix(str, sep)
+}
+
+func (s *Queue[T]) Slice() []T {
+	return s.s
 }
