@@ -26,7 +26,7 @@ type caveSlice struct {
 	minX             int
 	maxX             int
 	maxY             int
-	currentPath      []int64
+	currentPath      []uint64
 	hasInfiniteFloor bool
 }
 
@@ -175,7 +175,7 @@ func (c *caveSlice) dropGrain(startX, startY int) bool {
 
 func (c *caveSlice) dropGrainWithoutBottom(startX, startY int) bool {
 	x, y := startX, startY
-	c.currentPath = []int64{utils.FromXY(startX, startY)}
+	c.currentPath = []uint64{utils.FromXY(startX, startY)}
 	for {
 		nx, ny := c.nextMove(x, y)
 		c.currentPath = append(c.currentPath, utils.FromXY(nx, ny))
@@ -249,7 +249,7 @@ func (c *caveSlice) nextMove(x, y int) (int, int) {
 		return x, y
 	}
 
-	options := []int64{utils.FromXY(x, y+1), utils.FromXY(x-1, y+1), utils.FromXY(x+1, y+1)}
+	options := []uint64{utils.FromXY(x, y+1), utils.FromXY(x-1, y+1), utils.FromXY(x+1, y+1)}
 	for _, option := range options {
 		nx, ny := utils.ToXY(option)
 		if nx < c.minX || nx > c.maxX || ny > c.maxY {
@@ -289,7 +289,7 @@ func (c *caveSlice) String() string {
 	return strings.Join(lines, "\n")
 }
 
-func getPath(start, end string) ([]int64, error) {
+func getPath(start, end string) ([]uint64, error) {
 	var (
 		sx  int
 		sy  int
@@ -306,7 +306,7 @@ func getPath(start, end string) ([]int64, error) {
 		return nil, err
 	}
 
-	p := []int64{}
+	p := []uint64{}
 
 	x, y := sx, sy
 	if sx == ex && sy != ey {
